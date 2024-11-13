@@ -2,7 +2,8 @@ import time
 import math
 import random
 from web3 import Web3
-import colorama  # Import colorama untuk warna
+import colorama
+from colorama import Fore, Style
 
 # Inisialisasi colorama untuk dukungan ANSI warna
 colorama.init(autoreset=True)
@@ -14,9 +15,24 @@ YELLOW = "\033[93m"
 GREEN = "\033[92m"
 BLUE = "\033[94m"
 
+def art():
+    width = 50  # Lebar area teks yang ingin dipusatkan
+    print(Fore.YELLOW + r"""
+================================================
+""" + "Airdrop Community".center(width) + """
+================================================
+""" + "Bot : TAIKO".center(width) + """
+""" + "Telegram Channel : @airdropcom9".center(width) + """
+""" + "Telegram Group : @airdropcom8".center(width) + """
+================================================
+""" + Fore.GREEN)
+
+if __name__ == "__main__":
+    art()
+
 # Konfigurasi dan inisialisasi variabel
-RPC_URL = input("https://rpc.ankr.com/taiko: ")  # Input URL RPC secara manual
-PRIVATE_KEY = input("Masukkan Private Key: ")  # Input Private Key secara manual
+RPC_URL = "https://rpc.ankr.com/taiko"  # Input URL RPC secara manual
+PRIVATE_KEY = "isi private key"  # Input Private Key secara manual
 CONTRACT_VOTE = '0x4D1E2145082d0AB0fDa4a973dC4887C7295e21aB'  # Alamat kontrak voting
 ABI_VOTE = [
     {"stateMutability": "payable", "type": "fallback"},
@@ -33,11 +49,6 @@ account = web3.eth.account.from_key(PRIVATE_KEY)  # Buat objek akun menggunakan 
 
 # Fungsi untuk inisialisasi voting
 def initialize_voting(nonce, gas_increase):
-    """
-    Menginisialisasi transaksi voting, menyiapkan data transaksi termasuk nonce, gas, dan biaya.
-    nonce: Nonce dari transaksi.
-    gas_increase: Persentase kenaikan gas fee.
-    """
     try:
         encoded_data = contract.functions.vote()._encode_transaction_data()  # Encode data transaksi untuk voting
         estimated_gas = web3.eth.estimate_gas({"to": CONTRACT_VOTE, "data": encoded_data})  # Estimasi gas transaksi
@@ -64,28 +75,23 @@ def initialize_voting(nonce, gas_increase):
 
 # Fungsi untuk memproses total gas
 def process_total_gas(total_gas, gas_price):
-    """
-    Memproses estimasi gas yang dibutuhkan untuk batch transaksi.
-    total_gas: Total gas yang dibutuhkan.
-    gas_price: Harga gas rata-rata.
-    """
     avg_gas_per_tnx = Web3.from_wei(gas_price * GAS_USAGE, 'ether')  # Hitung rata-rata gas per transaksi
+    avg_gas_per_tnx = float(avg_gas_per_tnx)  # Pastikan menjadi float
 
-    if avg_gas_per_tnx > 0.000005:  # Batasi jika rata-rata gas terlalu tinggi
+    if avg_gas_per_tnx > 0.0000045:  # Batasi jika rata-rata gas terlalu tinggi
         print(f"{YELLOW}Gas price is too high, please wait and try again!{RESET}")
         return None, None, None
 
-    tnx_per_batch = random.randint(10, 15)  # Tentukan ukuran batch secara acak antara 10-15
-    gas_fee_increase_percent = round((0.000005 - avg_gas_per_tnx) / avg_gas_per_tnx * 100)  # Hitung persentase kenaikan fee
+    tnx_per_batch = random.randint(15, 20)  # Tentukan ukuran batch secara acak antara 10-15
+    gas_fee_increase_percent = round((0.0000045 - avg_gas_per_tnx) / avg_gas_per_tnx * 100)  # Hitung persentase kenaikan fee
     avg_gas_per_tnx *= (gas_fee_increase_percent / 100) + 1  # Update rata-rata gas per transaksi
+    
+    total_gas = float(total_gas)  # Konversi total gas ke float
     num_tnx = math.ceil(total_gas / avg_gas_per_tnx)  # Hitung total jumlah transaksi yang dibutuhkan
     return num_tnx, tnx_per_batch, gas_fee_increase_percent  # Kembalikan jumlah transaksi, ukuran batch, dan kenaikan fee
 
 # Fungsi utama untuk mengirim transaksi
 def send_tnx():
-    """
-    Fungsi utama untuk mengirimkan batch transaksi sampai target tercapai.
-    """
     avg_gas_price = sum([web3.eth.gas_price for _ in range(30)]) // 30  # Hitung harga gas rata-rata dari 30 sampel
 
     total_gas_in_wei = Web3.to_wei(math.ceil(TOTAL_POINT / 2.1 * 10), 'gwei')  # Hitung total gas dalam wei
@@ -104,6 +110,9 @@ def send_tnx():
     tx_count = 0  # Hitungan transaksi yang sukses
     failed_tx_count = 0  # Hitungan transaksi yang gagal
 
+    # Start measuring time
+    start_time = time.time()  # Record the start time
+
     while tx_count < num_tnx:  # Lakukan pengiriman sampai mencapai jumlah transaksi yang diperlukan
         batch_size = min(tnx_per_batch, num_tnx - tx_count)  # Tentukan ukuran batch berdasarkan sisa transaksi
         print(f"{GREEN}\nSending {batch_size} transactions with NONCE start {nonce}...{RESET}")
@@ -116,11 +125,11 @@ def send_tnx():
         for _ in range(batch_size):  # Kirim batch transaksi
             try:
                 signed_tx = account.sign_transaction(tx)  # Tanda tangani transaksi
-                web3.eth.send_raw_transaction(signed_tx.rawTransaction)  # Kirim transaksi
+                web3.eth.send_raw_transaction(signed_tx.raw_transaction)  # Kirim transaksi
                 print(f"{GREEN}Fee: {fee} ETH{RESET}")
                 nonce += 1  # Tingkatkan nonce
                 tx["nonce"] = nonce  # Update nonce dalam transaksi berikutnya
-                time.sleep(0.5)  # Tunggu sebentar sebelum transaksi berikutnya
+                time.sleep(10)  # Tunggu sebentar sebelum transaksi berikutnya
             except Exception as e:
                 print(f"{RED}Sending Tnx Error: {e}{RESET}")  # Jika ada kesalahan, tampilkan pesan error
                 failed_tx_count += 1  # Hitung transaksi yang gagal
@@ -132,5 +141,19 @@ def send_tnx():
             print(f"{YELLOW}(+) GAS_FEE_INCREASE_PERCENT {gas_fee_increase_percent}%{RESET}")
             failed_tx_count = 0  # Reset hitungan transaksi yang gagal
 
+        # Calculate and print elapsed time
+        elapsed_time = time.time() - start_time  # Get the elapsed time in seconds
+        print(f"{YELLOW}Elapsed time: {elapsed_time:.2f} seconds{RESET}")
+
+        # Print remaining wait time before the next batch of transactions
+        remaining_time = 10  # Set the wait time to an integer value (e.g., 10 seconds)
+        print(f"{YELLOW}Waiting for {remaining_time} seconds before sending next batch...{RESET}")
+        time.sleep(remaining_time)  # Tunggu sebentar sebelum batch transaksi berikutnya
+
 if __name__ == "__main__":
-    send_tnx()  # Panggil fungsi utama untuk memulai proses transaksi
+    try:
+        send_tnx()  # Panggil fungsi utama untuk memulai proses transaksi
+    except KeyboardInterrupt:
+        print(Fore.RED + "\nInterrupted by user." + Style.RESET_ALL)
+    finally:
+        print(Fore.YELLOW + "Thank you tod!" + Style.RESET_ALL)
