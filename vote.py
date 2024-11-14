@@ -40,7 +40,7 @@ ABI_VOTE = [
 ]  # ABI dari kontrak, termasuk metode "vote"
 CHAIN_ID = 0x28c58  # ID chain untuk jaringan Taiko Mainnet
 GAS_USAGE = 21116  # Estimasi gas yang digunakan
-TOTAL_POINT = int(input("Masukkan total poin yang ingin dicapai: "))  # Total poin target dari pengguna
+TOTAL_POINT = int(input("Masukkan total poin yang ingin dicapai default daily max point 73580: "))  # Total poin target dari pengguna
 
 # Setup Web3 dan kontrak
 web3 = Web3(Web3.HTTPProvider(RPC_URL))  # Inisialisasi koneksi Web3
