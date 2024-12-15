@@ -31,7 +31,7 @@ if __name__ == "__main__":
     art()
 
 # Konfigurasi dan inisialisasi variabel
-RPC_URL = "https://rpc.ankr.com/taiko"  # Input URL RPC secara manual
+RPC_URL = "https://rpc.taiko.tools"  # Input URL RPC secara manual
 PRIVATE_KEY = "isi private key"  # Input Private Key secara manual
 CONTRACT_VOTE = '0x4D1E2145082d0AB0fDa4a973dC4887C7295e21aB'  # Alamat kontrak voting
 ABI_VOTE = [
