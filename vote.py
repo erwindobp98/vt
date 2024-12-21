@@ -54,8 +54,14 @@ def initialize_voting(nonce, gas_increase):
         encoded_data = contract.functions.vote()._encode_transaction_data()  # Encode data transaksi untuk voting
         estimated_gas = web3.eth.estimate_gas({"to": CONTRACT_VOTE, "data": encoded_data})  # Estimasi gas transaksi
         gas_limit = estimated_gas * 2  # Set batas gas dengan buffer 2x dari estimasi
-        max_priority_fee_per_gas = web3.eth.gas_price * (100 + gas_increase) // 100  # Hitung prioritas fee gas
-        max_fee_per_gas = Web3.to_wei(0.24, 'gwei')  # Set batas maksimum fee per gas
+
+        # Rentang min dan max untuk gas fee dalam Gwei
+        min_gas_price_gwei = 0.234  # Minimum gas price dalam Gwei
+        max_gas_price_gwei = 0.24  # Maksimum gas price dalam Gwei
+
+        # Hitung maxPriorityFeePerGas dan maxFeePerGas berdasarkan rentang
+        max_priority_fee_per_gas = Web3.to_wei(random.uniform(min_gas_price_gwei, max_gas_price_gwei), 'gwei')
+        max_fee_per_gas = Web3.to_wei(max_gas_price_gwei, 'gwei')  # Batas maksimum fee per gas
 
         tx = {
             "nonce": nonce,  # Nonce transaksi
@@ -74,6 +80,7 @@ def initialize_voting(nonce, gas_increase):
         print(f"{RED}Error sending vote: {e}{RESET}")  # Tampilkan pesan error dengan warna merah
         return None, None
 
+
 # Fungsi untuk memproses total gas
 def process_total_gas(total_gas, gas_price):
     avg_gas_per_tnx = Web3.from_wei(gas_price * GAS_USAGE, 'ether')  # Hitung rata-rata gas per transaksi
@@ -83,8 +90,8 @@ def process_total_gas(total_gas, gas_price):
         print(f"{YELLOW}Gas price is too high, please wait and try again!{RESET}")
         return None, None, None
 
-    tnx_per_batch = random.randint(15, 20)  # Tentukan ukuran batch secara acak antara 10-15
-    gas_fee_increase_percent = round((0.0000045 - avg_gas_per_tnx) / avg_gas_per_tnx * 100)  # Hitung persentase kenaikan fee
+    tnx_per_batch = random.randint(5, 10)  # Tentukan ukuran batch secara acak antara 5-10
+    gas_fee_increase_percent = round((0.000005 - avg_gas_per_tnx) / avg_gas_per_tnx * 100)  # Hitung persentase kenaikan fee
     avg_gas_per_tnx *= (gas_fee_increase_percent / 100) + 1  # Update rata-rata gas per transaksi
     
     total_gas = float(total_gas)  # Konversi total gas ke float
@@ -130,7 +137,7 @@ def send_tnx():
                 print(f"{GREEN}Fee: {fee} ETH{RESET}")
                 nonce += 1  # Tingkatkan nonce
                 tx["nonce"] = nonce  # Update nonce dalam transaksi berikutnya
-                time.sleep(10)  # Tunggu sebentar sebelum transaksi berikutnya
+                time.sleep(6)  # Tunggu sebentar sebelum transaksi berikutnya
             except Exception as e:
                 print(f"{RED}Sending Tnx Error: {e}{RESET}")  # Jika ada kesalahan, tampilkan pesan error
                 failed_tx_count += 1  # Hitung transaksi yang gagal
@@ -147,7 +154,7 @@ def send_tnx():
         print(f"{YELLOW}Elapsed time: {elapsed_time:.2f} seconds{RESET}")
 
         # Print remaining wait time before the next batch of transactions
-        remaining_time = 10  # Set the wait time to an integer value (e.g., 10 seconds)
+        remaining_time = 6  # Set the wait time to an integer value (e.g., 6 seconds)
         print(f"{YELLOW}Waiting for {remaining_time} seconds before sending next batch...{RESET}")
         time.sleep(remaining_time)  # Tunggu sebentar sebelum batch transaksi berikutnya
 
