@@ -80,7 +80,6 @@ def initialize_voting(nonce, gas_increase):
         print(f"{RED}Error sending vote: {e}{RESET}")  # Tampilkan pesan error dengan warna merah
         return None, None
 
-
 # Fungsi untuk memproses total gas
 def process_total_gas(total_gas, gas_price):
     avg_gas_per_tnx = Web3.from_wei(gas_price * GAS_USAGE, 'ether')  # Hitung rata-rata gas per transaksi
