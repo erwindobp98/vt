@@ -181,7 +181,7 @@ def get_transaction_data_from_taiko(my_address):
     try:
         now = int(time.time())
         start_of_today = int(datetime.datetime.now(datetime.timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0).timestamp())
-        start_of_period = int(datetime.datetime(2024, 9, 16, tzinfo=datetime.timezone.utc).timestamp())
+        start_of_period = int(datetime.datetime(2024, 9, 16, 12, tzinfo=datetime.timezone.utc).timestamp())
         
         url = f'https://api.taikoscan.io/api?module=account&action=txlist&address={my_address}'
         response = requests.get(url)
