@@ -57,7 +57,7 @@ def initialize_voting(nonce, gas_increase):
 
         # Rentang min dan max untuk gas fee dalam Gwei
         min_gas_price_gwei = 0.234  # Minimum gas price dalam Gwei
-        max_gas_price_gwei = 0.24  # Maksimum gas price dalam Gwei
+        max_gas_price_gwei = 0.236  # Maksimum gas price dalam Gwei
 
         # Hitung maxPriorityFeePerGas dan maxFeePerGas berdasarkan rentang
         max_priority_fee_per_gas = Web3.to_wei(random.uniform(min_gas_price_gwei, max_gas_price_gwei), 'gwei')
@@ -85,12 +85,12 @@ def process_total_gas(total_gas, gas_price):
     avg_gas_per_tnx = Web3.from_wei(gas_price * GAS_USAGE, 'ether')  # Hitung rata-rata gas per transaksi
     avg_gas_per_tnx = float(avg_gas_per_tnx)  # Pastikan menjadi float
 
-    if avg_gas_per_tnx > 0.0000047:  # Batasi jika rata-rata gas terlalu tinggi
+    if avg_gas_per_tnx > 0.00000491:  # Batasi jika rata-rata gas terlalu tinggi
         print(f"{YELLOW}Gas price is too high, please wait and try again!{RESET}")
         return None, None, None
 
     tnx_per_batch = random.randint(5, 10)  # Tentukan ukuran batch secara acak antara 5-10
-    gas_fee_increase_percent = round((0.0000047 - avg_gas_per_tnx) / avg_gas_per_tnx * 100)  # Hitung persentase kenaikan fee
+    gas_fee_increase_percent = round((0.00000491 - avg_gas_per_tnx) / avg_gas_per_tnx * 100)  # Hitung persentase kenaikan fee
     avg_gas_per_tnx *= (gas_fee_increase_percent / 100) + 1  # Update rata-rata gas per transaksi
     
     total_gas = float(total_gas)  # Konversi total gas ke float
