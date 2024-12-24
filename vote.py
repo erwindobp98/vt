@@ -292,7 +292,7 @@ def display_taiko_data(my_address):
 
     if transaction_data:
         animated_print("=================================================================", color=Fore.MAGENTA, delay=0.01)
-        animated_print("                       Taiko Transaction Data S2             ", color=Fore.GREEN, delay=0.01)
+        animated_print("                       Taiko Transaction Data S3             ", color=Fore.GREEN, delay=0.01)
         animated_print("=================================================================", color=Fore.MAGENTA, delay=0.01)
         if 'adjusted_gas_fee_eth_today' in transaction_data:
             animated_print(f"Gas Fee ETH (Hari Ini)       : {transaction_data['adjusted_gas_fee_eth_today']:.10f} ETH", color=Fore.YELLOW, delay=0.01)
@@ -322,7 +322,7 @@ def display_taiko_data(my_address):
         breakdown = rank_data.get('breakdown', 'N/A')
 
         animated_print("=================================================================", color=Fore.MAGENTA, delay=0.01)
-        animated_print("                       Taiko Rank Data S2           ", color=Fore.GREEN, delay=0.02)
+        animated_print("                       Taiko Rank Data S3           ", color=Fore.GREEN, delay=0.02)
         animated_print("=================================================================", color=Fore.MAGENTA, delay=0.01)
         animated_print(f"Rank                         : {rank}", color=Fore.YELLOW, delay=0.01)
         animated_print(f"Score                        : {score}", color=Fore.YELLOW, delay=0.01)
