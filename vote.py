@@ -89,7 +89,7 @@ def process_total_gas(total_gas, gas_price):
         print(f"{YELLOW}Gas price is too high, please wait and try again!{RESET}")
         return None, None, None
 
-    tnx_per_batch = random.randint(5, 10)  # Tentukan ukuran batch secara acak antara 5-10
+    tnx_per_batch = random.randint(2, 4)  # Tentukan ukuran batch secara acak antara 5-10
     gas_fee_increase_percent = round((0.00000491 - avg_gas_per_tnx) / avg_gas_per_tnx * 100)  # Hitung persentase kenaikan fee
     avg_gas_per_tnx *= (gas_fee_increase_percent / 100) + 1  # Update rata-rata gas per transaksi
     
@@ -136,7 +136,7 @@ def send_tnx():
                 print(f"{GREEN}Fee: {fee} ETH{RESET}")
                 nonce += 1  # Tingkatkan nonce
                 tx["nonce"] = nonce  # Update nonce dalam transaksi berikutnya
-                time.sleep(6)  # Tunggu sebentar sebelum transaksi berikutnya
+                time.sleep(35)  # Tunggu sebentar sebelum transaksi berikutnya
             except Exception as e:
                 print(f"{RED}Sending Tnx Error: {e}{RESET}")  # Jika ada kesalahan, tampilkan pesan error
                 failed_tx_count += 1  # Hitung transaksi yang gagal
@@ -153,7 +153,7 @@ def send_tnx():
         print(f"{YELLOW}Elapsed time: {elapsed_time:.2f} seconds{RESET}")
 
         # Print remaining wait time before the next batch of transactions
-        remaining_time = 6  # Set the wait time to an integer value (e.g., 6 seconds)
+        remaining_time = 35  # Set the wait time to an integer value (e.g., 6 seconds)
         print(f"{YELLOW}Waiting for {remaining_time} seconds before sending next batch...{RESET}")
         time.sleep(remaining_time)  # Tunggu sebentar sebelum batch transaksi berikutnya
 
